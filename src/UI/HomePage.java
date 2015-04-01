@@ -6,12 +6,16 @@
 package UI;
 
 import GameInfo.Player;
+import GameInfo.Room;
+import JudgeStatus.JudgeStatus;
 import SendingData.SSLClient;
 import TimerTaskGame.Ask4RoomList;
+import static UI.CreateRoomInfo.STATUS;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.json.JSONException;
 import org.json.JSONObject;
 import javax.swing.table.DefaultTableModel;
@@ -29,7 +33,16 @@ public class HomePage extends javax.swing.JFrame {
     static int START_TIME = 100;
     static int PERIOD = 1000;
 
-
+    static String KEY_JOINROOM = "joinroom";
+    static String KEY_USERID = "userid";
+    static String KEY_ROOMID = "roomid";
+    
+    private int userid;
+    private int roomid;
+    private int status;
+    private int[] roomids;
+    Ask4RoomList task = new Ask4RoomList();
+    
     public HomePage() throws JSONException {
         initComponents();
         
@@ -39,7 +52,7 @@ public class HomePage extends javax.swing.JFrame {
         
         
         Timer timer = new java.util.Timer(true);
-        Ask4RoomList task = new Ask4RoomList();
+        //Ask4RoomList task = new Ask4RoomList();
         DefaultTableModel model = (DefaultTableModel) jRoomList.getModel();
         task.setOnRefreshListner(new Ask4RoomList.OnRefreshListener(){
 
@@ -81,10 +94,11 @@ public class HomePage extends javax.swing.JFrame {
         jRoomList = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jCreate = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jJoin = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setLayout(null);
 
@@ -210,7 +224,12 @@ public class HomePage extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/img/JoinRoom.jpg"))); // NOI18N
+        jJoin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/img/JoinRoom.jpg"))); // NOI18N
+        jJoin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jJoinActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -220,7 +239,7 @@ public class HomePage extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addComponent(jCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jJoin, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -228,7 +247,7 @@ public class HomePage extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jJoin, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(29, Short.MAX_VALUE))
         );
@@ -267,6 +286,62 @@ public class HomePage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_PurchaseActionPerformed
 
+    private void jJoinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jJoinActionPerformed
+        // TODO add your handling code here:
+        if(jRoomList.getSelectedRow() == -1){
+            JOptionPane.showMessageDialog(null, "Please select a room to join");
+            return;
+        }
+        JSONObject response = null;
+        try {
+            response = SSLClient.postMessage(getMessgeJoin());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            status = response.getInt(STATUS);
+        } catch (JSONException ex) {
+            Logger.getLogger(Registration.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //static method
+        if (JudgeStatus.OutputStatus(status) == false) {
+            return;
+        }
+    }//GEN-LAST:event_jJoinActionPerformed
+
+    public JSONObject getMessgeJoin() {
+        JSONObject test = new JSONObject();
+        try {
+            test.put("opt", KEY_JOINROOM);
+            userid = Player.GetPlayer().GetUserId();
+            test.put("userid", userid);
+            JSONObject info = new JSONObject();
+            jRoomList.getSelectedRow();
+            int row = jRoomList.getSelectedRow();
+            
+            //Ask4RoomList task = new Ask4RoomList();
+            task.setOnRefreshListner(new Ask4RoomList.OnRefreshListener(){
+
+                @Override
+                public void onRefresh(String test) {
+                    roomids = task.get_roomids();
+                }
+                
+            });
+            Room.Getroom().SetRoomID(roomids[row]);
+            roomid = Room.Getroom().GetRoomID();
+            info.put("roomid", roomid);
+            test.put("info", info);
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println(test);
+        return test;
+    }
+    
     //JSONObject jsonObject = new JSONObject(string);
     
     /**
@@ -312,8 +387,8 @@ public class HomePage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Purchase;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jCreate;
+    private javax.swing.JButton jJoin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jMoney;
     private javax.swing.JLabel jName;

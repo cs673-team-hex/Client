@@ -27,7 +27,8 @@ public class SSLClient extends Thread {
 	private static BufferedWriter mBufferedWriter;
 	private static BufferedReader mBufferedReader;
 	private static SSLSocket msslSock;
-
+        public static String IPADD = "168.122.12.178";
+        
 	public static void initConnect() throws KeyManagementException,
 			NoSuchAlgorithmException, UnsupportedEncodingException, IOException {
 
@@ -38,7 +39,7 @@ public class SSLClient extends Thread {
 		sc.init(null, trustAllCerts, new java.security.SecureRandom());
 		SSLSocketFactory sslSocketFactory = sc.getSocketFactory();
 
-		msslSock = (SSLSocket) sslSocketFactory.createSocket("10.0.0.26",8081);
+		msslSock = (SSLSocket) sslSocketFactory.createSocket(IPADD,8081);
 
 		// send HTTP get request
 		mBufferedWriter = new BufferedWriter(new OutputStreamWriter(
@@ -73,7 +74,7 @@ public class SSLClient extends Thread {
 		mBufferedReader = new BufferedReader(new InputStreamReader(
 				msslSock.getInputStream()));
 		string = mBufferedReader.readLine();
-		System.out.println(string);
+		//System.out.println(string);
 		if(string == null)
 			return response;
 		try {

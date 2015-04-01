@@ -9,7 +9,6 @@ import GameInfo.Player;
 import JudgeStatus.JudgeStatus;
 import SendingData.SSLClient;
 import UI.Registration;
-import static UI.Registration.STATUS;
 import java.io.IOException;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -46,6 +45,9 @@ public class Ask4RoomList extends TimerTask {
     public static String KEY_GAMETYPE = "type";
     public static String KEY_CURRENTNUMBER = "cnumber";
     public static String KEY_MAXNUMBER = "mnumber";
+    public static String KEY_ROOMID = "roomid";
+    public static int ROOMSPACE = 10;
+    
     private String[] room_name = new String[num];
     private String[] creator_name = new String[num];
     private String[] game_name = new String[num];
@@ -55,6 +57,9 @@ public class Ask4RoomList extends TimerTask {
     private int maxnumber;
     private int room_number;
     private int userid;
+    private int roomid;
+    private int[] roomids = new int[ROOMSPACE];
+    private JSONArray roominfo;
 
     private int status;
     public static String STATUS = "status";
@@ -79,7 +84,7 @@ public class Ask4RoomList extends TimerTask {
             return;
         }
 
-        System.out.println(response);
+        //System.out.println(response);
         JSONObject result = new JSONObject();
         try {
             result = response.getJSONObject(KEY_RES);
@@ -87,7 +92,7 @@ public class Ask4RoomList extends TimerTask {
         } catch (JSONException ex) {
             Logger.getLogger(Ask4RoomList.class.getName()).log(Level.SEVERE, null, ex);
         }
-        JSONArray roominfo = new JSONArray();
+        roominfo = new JSONArray();
 
         roominfo = result.optJSONArray(KEY_ROOMS);
         //System.out.println(roominfo);
@@ -106,6 +111,8 @@ public class Ask4RoomList extends TimerTask {
                         room_name[i] = room.getString(KEY_TITLE);
                         creator_name[i] = room.getString(KEY_USERNAME);
                         game_type = room.getInt(KEY_GAMETYPE);
+                        roomid = room.getInt(KEY_ROOMID);
+                        roomids[i] = roomid;
                         if (game_type == 1) {
                             game_name[i] = "BlackJack";
                         }
@@ -127,6 +134,10 @@ public class Ask4RoomList extends TimerTask {
         //System.out.println(roomid);
     }
 
+    public int[] get_roomids(){
+        return roomids;
+    }
+    
     public int get_room_number() {
         return room_number;
     }
@@ -167,7 +178,7 @@ public class Ask4RoomList extends TimerTask {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println(test);
+        //System.out.println(test);
         return test;
     }
 }

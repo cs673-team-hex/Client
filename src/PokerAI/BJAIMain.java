@@ -151,7 +151,7 @@ public class BJAIMain {
         return Math.random() < 0.5;
     }
 
-    //Level 0 AI 主要小于13我就抓牌
+    //Level 0 AI 主要小于18我就抓牌
     public boolean doMakeDecisionLevel0(CardDeck cdBeforeGame, ArrayList<Card> myCard, ArrayList<Card> oppCard) {
         if (BlackJackRule.GetMaxValueOfHand(myCard) < 18 && BlackJackRule.GetMaxValueOfHand(myCard) != -1) {
             return true;

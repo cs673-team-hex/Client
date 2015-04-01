@@ -5,6 +5,9 @@
  */
 package Log;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
@@ -29,14 +32,21 @@ public class Log {
         }
         return instance;
     }
-    
-    public void ClearLog()
-    {
+
+    public void ClearLog() {
         sb.setLength(0);
     }
-    
-    public String getLog(){
+
+    public String getLog() {
         return sb.toString();
+    }
+
+    public void WriteLog() throws IOException {
+        FileWriter fileWritter = new FileWriter("Log.txt", true);
+        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+        bufferWritter.write(sb.toString());
+        bufferWritter.close();
+        System.out.println("Done");
     }
 
     public StringBuffer Log(int nLogLevel, String strContent) {

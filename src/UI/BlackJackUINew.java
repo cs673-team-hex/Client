@@ -11,6 +11,9 @@ import PokerDeck.Card;
 import PokerGame.BlackJackPlay;
 import PokerGame.BlackJackPlayRound;
 import PokerGame.BlackJackRule;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +21,6 @@ import javax.mail.MessagingException;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -53,6 +55,8 @@ public class BlackJackUINew extends javax.swing.JFrame {
         YourActionList.add(jStand);
         YourActionList.add(jSurrender);
         YourActionList.add(jDouble);
+        
+         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -203,10 +207,10 @@ public class BlackJackUINew extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPScore, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPMoney, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPMoney, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -331,6 +335,7 @@ public class BlackJackUINew extends javax.swing.JFrame {
         jLabel8.setFocusable(false);
 
         jAIScore.setEditable(false);
+        jAIScore.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         jAIScore.setEnabled(false);
         jAIScore.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -360,14 +365,11 @@ public class BlackJackUINew extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jAIMoney, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jAIScore)))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jAIMoney, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jAIScore, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -386,7 +388,7 @@ public class BlackJackUINew extends javax.swing.JFrame {
         jLabel8.getAccessibleContext().setAccessibleName("AI Points:");
 
         jPanel1.add(jPanel3);
-        jPanel3.setBounds(610, 10, 180, 90);
+        jPanel3.setBounds(610, 10, 190, 90);
 
         jRound.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jPanel1.add(jRound);
@@ -416,6 +418,20 @@ public class BlackJackUINew extends javax.swing.JFrame {
         game = new BlackJackPlay(this);
         try {
             game.GameBegin();
+
+            addWindowListener(new WindowAdapter() {
+
+                public void windowClosing(WindowEvent e) {
+                    super.windowClosing(e);
+                    CreateRoom createRoom = new CreateRoom();
+                    createRoom.setVisible(true);
+                    try {
+                        Log.getInstance().WriteLog();
+                    } catch (IOException ex) {
+                        Logger.getLogger(BlackJackUINew.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
 
         } catch (InterruptedException ex) {
             Logger.getLogger(BlackJackUINew.class.getName()).log(Level.SEVERE, null, ex);
@@ -648,7 +664,7 @@ public class BlackJackUINew extends javax.swing.JFrame {
     }//GEN-LAST:event_jNextRoundActionPerformed
 
     private void jStandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jStandActionPerformed
-        if (game.getPlayer().AmIDouble()) {
+        if (BlackJackRule.AmIBust(game.getPlayer())) {
             //Player Bust! Round End!
             round.RoundEndByPlayer();
         }

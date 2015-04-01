@@ -9,10 +9,15 @@ import GameInfo.Player;
 import GameInfo.Room;
 import JudgeStatus.JudgeStatus;
 import SendingData.SSLClient;
-import static TimerTaskGame.Ask4RoomList.STATUS;
+import TimerTaskGame.Ask4Roominfo;
+import static UI.HomePage.START_TIME;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,24 +29,86 @@ public class CreateRoom extends javax.swing.JFrame {
 
     private int roomid;
     private int userid;
-    
+
+    static int START_TIME = 100;
+    static int PERIOD = 1000;
+
     private int status;
     public static String STATUS = "status";
-    
+
+    private String title;
+    private int number;
+    private int type;
+    private int wager;
+    private String game_type;
+
     /**
      * Creates new form CreateRoom
      */
     public CreateRoom() {
         initComponents();
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                HomePage homePage;
+                try {
+                    homePage = new HomePage();
+                    homePage.setVisible(true);
+                } catch (JSONException ex) {
+                    Logger.getLogger(CreateRoom.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                JSONObject response = null;
+                try {
+                    response = SSLClient.postMessage(getMessgeQuit());
+                } catch (IOException E) {
+                    // TODO Auto-generated catch block
+                    E.printStackTrace();
+                }
+
+                try {
+                    status = response.getInt(STATUS);
+                } catch (JSONException ex) {
+                    Logger.getLogger(Registration.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (JudgeStatus.OutputStatus(status) == false) {
+                    return;
+                }
+            }
+        });
+        Timer timer = new java.util.Timer(true);
+        Ask4Roominfo task = new Ask4Roominfo();
+        task.setOnRefreshListner(new Ask4Roominfo.OnRefreshListener() {
+
+            @Override
+            public void onRefresh(String test) {
+                title = task.Get_title();
+                number = task.Get_number();
+                type = task.Get_type();
+                System.out.println(title + "  " + number + "  " + type);
+                if (type == 1) {
+                    game_type = "BlackJack";
+                }
+                wager = task.Get_wager();
+                jTitle.setText("Welcome to " + title);
+                jMax.setText(number + "");
+                jWager.setText(wager + "");
+                jType.setText(game_type);
+            }
+        });
+        timer.schedule(task, START_TIME, PERIOD);
+
     }
 
-    public JSONObject getMessge() {
+    public JSONObject getMessgeQuit() {
         JSONObject test = new JSONObject();
         try {
             userid = Player.GetPlayer().GetUserId();
             roomid = Room.Getroom().GetRoomID();
             test.put("opt", "quitroom");
-            test.put("userid",userid);
+            test.put("userid", userid);
             JSONObject info = new JSONObject();
             info.put("roomid", roomid);
             test.put("info", info);
@@ -49,10 +116,28 @@ public class CreateRoom extends javax.swing.JFrame {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println(test);
+        //System.out.println(test);
         return test;
     }
-    
+
+    public JSONObject getMessgeStart() {
+        JSONObject test = new JSONObject();
+        try {
+            userid = Player.GetPlayer().GetUserId();
+            roomid = Room.Getroom().GetRoomID();
+            test.put("opt", "startgame");
+            test.put("userid", userid);
+            JSONObject info = new JSONObject();
+            info.put("roomid", roomid);
+            test.put("info", info);
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        //System.out.println(test);
+        return test;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,6 +150,15 @@ public class CreateRoom extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jStart = new javax.swing.JButton();
         jQuit = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jMax = new javax.swing.JTextField();
+        jWager = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jType = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jTitle = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -90,6 +184,69 @@ public class CreateRoom extends javax.swing.JFrame {
         jPanel1.add(jQuit);
         jQuit.setBounds(560, 380, 176, 41);
 
+        jPanel2.setOpaque(false);
+        jPanel2.setLayout(null);
+
+        jMax.setEditable(false);
+        jMax.setFocusable(false);
+        jPanel2.add(jMax);
+        jMax.setBounds(110, 20, 40, 25);
+
+        jWager.setEnabled(false);
+        jWager.setFocusable(false);
+        jPanel2.add(jWager);
+        jWager.setBounds(110, 70, 40, 25);
+
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Wager:");
+        jPanel2.add(jLabel2);
+        jLabel2.setBounds(60, 70, 50, 25);
+
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Max Player:");
+        jPanel2.add(jLabel3);
+        jLabel3.setBounds(40, 20, 70, 20);
+
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Game Type:");
+        jPanel2.add(jLabel4);
+        jLabel4.setBounds(40, 120, 70, 25);
+
+        jType.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jType.setForeground(new java.awt.Color(255, 255, 255));
+        jPanel2.add(jType);
+        jType.setBounds(110, 120, 80, 25);
+
+        jPanel1.add(jPanel2);
+        jPanel2.setBounds(570, 0, 230, 200);
+
+        jPanel3.setOpaque(false);
+
+        jTitle.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        jTitle.setForeground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(72, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel3);
+        jPanel3.setBounds(0, 0, 410, 150);
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/img/HomePage_bg.jpg"))); // NOI18N
         jPanel1.add(jLabel1);
         jLabel1.setBounds(0, 0, 800, 450);
@@ -109,23 +266,14 @@ public class CreateRoom extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jStartActionPerformed
-        BlackJackUINew b = new BlackJackUINew();
-        b.setSize(798, 584);
-        b.setLocation(0, 0);
-        b.setVisible(true);
-        this.setVisible(false);
-        
-    }//GEN-LAST:event_jStartActionPerformed
-
-    private void jQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jQuitActionPerformed
         JSONObject response = null;
         try {
-            response = SSLClient.postMessage(getMessge());
+            response = SSLClient.postMessage(getMessgeQuit());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         try {
             status = response.getInt(STATUS);
         } catch (JSONException ex) {
@@ -135,8 +283,35 @@ public class CreateRoom extends javax.swing.JFrame {
         if (JudgeStatus.OutputStatus(status) == false) {
             return;
         }
-        
-        
+        BlackJackUINew ui = new BlackJackUINew();
+        ui.setVisible(true);
+        try {
+            ui.DoSomethingAtBegin();
+        } catch (MessagingException ex) {
+            Logger.getLogger(BlackJackUINew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.dispose();
+
+    }//GEN-LAST:event_jStartActionPerformed
+
+    private void jQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jQuitActionPerformed
+        JSONObject response = null;
+        try {
+            response = SSLClient.postMessage(getMessgeQuit());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            status = response.getInt(STATUS);
+        } catch (JSONException ex) {
+            Logger.getLogger(Registration.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (JudgeStatus.OutputStatus(status) == false) {
+            return;
+        }
         this.dispose();
     }//GEN-LAST:event_jQuitActionPerformed
 
@@ -177,8 +352,17 @@ public class CreateRoom extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JTextField jMax;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JButton jQuit;
     private javax.swing.JButton jStart;
+    private javax.swing.JLabel jTitle;
+    private javax.swing.JLabel jType;
+    private javax.swing.JTextField jWager;
     // End of variables declaration//GEN-END:variables
 }

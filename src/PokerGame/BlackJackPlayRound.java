@@ -131,8 +131,8 @@ public class BlackJackPlayRound {
         UI.RefreshWhenAIWin();
         UI.AskForNextRound();
     }
-    
-    public Player GetWinPlayer(){
+
+    public Player GetWinPlayer() {
         return pWinPlayer;
     }
 
@@ -191,17 +191,28 @@ public class BlackJackPlayRound {
                 return;
             }
         }
+        //A|B Test
+        if (game.getNumOfRound() % 2 == 0) {
+            while (aiMain.doMakeDecisionLevelSB(cardDeck, pAI.getPlayerCards(), pPlayer.getPlayerCards())) {
+                cardDeck.giveTopCardToPlayer(pAI);
 
-        while (aiMain.doMakeDecisionLevel1(cardDeck, pAI.getPlayerCards(), pPlayer.getPlayerCards())) {
-            cardDeck.giveTopCardToPlayer(pAI);
+                if (BlackJackRule.AmIBust(pAI.getPlayerCards())) {
+                    //AI Bust by BAD decison
+                    RoundEndByPlayer();
+                    return;
+                }
+            }
+        } else {
+            while (aiMain.doMakeDecisionLevel1(cardDeck, pAI.getPlayerCards(), pPlayer.getPlayerCards())) {
+                cardDeck.giveTopCardToPlayer(pAI);
 
-            if (BlackJackRule.AmIBust(pAI.getPlayerCards())) {
-                //AI Bust by BAD decison
-                RoundEndByPlayer();
-                return;
+                if (BlackJackRule.AmIBust(pAI.getPlayerCards())) {
+                    //AI Bust by BAD decison
+                    RoundEndByPlayer();
+                    return;
+                }
             }
         }
-
         //AI survive without Bust
         RoundEndByPlayer();
     }

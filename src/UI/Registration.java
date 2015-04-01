@@ -7,6 +7,8 @@ package UI;
 
 import JudgeStatus.JudgeStatus;
 import SendingData.SSLClient;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -35,6 +37,15 @@ public class Registration extends javax.swing.JFrame {
      */
     public Registration() {
         initComponents();
+        addWindowListener(new WindowAdapter() {
+
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                Login LoginPage;
+                LoginPage = new Login();
+                LoginPage.setVisible(true);
+            }
+        });
     }
 
     /**
@@ -125,12 +136,12 @@ public class Registration extends javax.swing.JFrame {
             password = password + temp_pass[i];
             //System.out.print(temp[i]);
         }
-        for (int j = 0; j < repass.getPassword().length; j++){
+        for (int j = 0; j < repass.getPassword().length; j++) {
             repassword = repassword + temp_repass[j];
         }
         System.out.println("password: " + password);
         System.out.println("repassword: " + repassword);
-        if(!password.equals(repassword)){
+        if (!password.equals(repassword)) {
             jLabel2.setEnabled(true);
             return;
         }
@@ -169,7 +180,7 @@ public class Registration extends javax.swing.JFrame {
                 Logger.getLogger(Registration.class.getName()).log(Level.SEVERE, null, ex);
             }
             //static method
-            if(JudgeStatus.OutputStatus(status) == false){
+            if (JudgeStatus.OutputStatus(status) == false) {
                 return;
             }
             System.out.println(response);
