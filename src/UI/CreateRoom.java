@@ -41,6 +41,7 @@ public class CreateRoom extends javax.swing.JFrame {
     private int type;
     private int wager;
     private String game_type;
+    Timer timer;
 
     /**
      * Creates new form CreateRoom
@@ -78,7 +79,7 @@ public class CreateRoom extends javax.swing.JFrame {
                 }
             }
         });
-        Timer timer = new java.util.Timer(true);
+        timer = new java.util.Timer(true);
         Ask4Roominfo task = new Ask4Roominfo();
         task.setOnRefreshListner(new Ask4Roominfo.OnRefreshListener() {
 
@@ -266,9 +267,9 @@ public class CreateRoom extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jStartActionPerformed
-        JSONObject response = null;
+        /*JSONObject response = null;
         try {
-            response = SSLClient.postMessage(getMessgeQuit());
+            response = SSLClient.postMessage(getMessgeStart());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -282,7 +283,7 @@ public class CreateRoom extends javax.swing.JFrame {
 
         if (JudgeStatus.OutputStatus(status) == false) {
             return;
-        }
+        }*/
         BlackJackUINew ui = new BlackJackUINew();
         ui.setVisible(true);
         try {
@@ -312,6 +313,7 @@ public class CreateRoom extends javax.swing.JFrame {
         if (JudgeStatus.OutputStatus(status) == false) {
             return;
         }
+        timer.cancel();
         this.dispose();
     }//GEN-LAST:event_jQuitActionPerformed
 

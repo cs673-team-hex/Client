@@ -3,6 +3,7 @@
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -240,7 +241,7 @@
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                       <Component id="jCreate" min="-2" pref="176" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                      <Component id="jButton3" min="-2" pref="176" max="-2" attributes="0"/>
+                      <Component id="jJoin" min="-2" pref="176" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -250,7 +251,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jButton3" min="-2" pref="41" max="-2" attributes="0"/>
+                          <Component id="jJoin" min="-2" pref="41" max="-2" attributes="0"/>
                           <Component id="jCreate" min="-2" pref="41" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="29" max="32767" attributes="0"/>
@@ -269,12 +270,15 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCreateActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton3">
+            <Component class="javax.swing.JButton" name="jJoin">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/UI/img/JoinRoom.jpg"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jJoinActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
