@@ -7,7 +7,7 @@ package PokerGame;
 
 import Log.Log;
 import PokerDeck.CardDeck;
-import PlayerInfo.Player;
+import PlayerInfo.AIPlayer;
 import UI.BlackJackUINew;
 import javax.mail.MessagingException;
 
@@ -21,8 +21,8 @@ public class BlackJackPlay {
     private BlackJackPlayRound blackJackPlayRound;
     static private CardDeck deck;
 
-    Player pPlayer;
-    Player pAI;
+    AIPlayer pPlayer;
+    AIPlayer pAI;
 
     final BlackJackUINew UI;
 
@@ -32,8 +32,8 @@ public class BlackJackPlay {
         }
         nRound = 0;
         int nStartMoney = 1000;
-        pPlayer = new Player(nStartMoney, false);
-        pAI = new Player(nStartMoney, true);
+        pPlayer = new AIPlayer(nStartMoney, false);
+        pAI = new AIPlayer(nStartMoney, true);
         UI = ui;
         UI.RefreshMoneyOfBothPlayer();
     }
@@ -48,20 +48,20 @@ public class BlackJackPlay {
         PlayNewRound();
     }
 
-    public Player getPlayer() {
+    public AIPlayer getPlayer() {
         return pPlayer;
     }
 
-    public Player getAI() {
+    public AIPlayer getAI() {
         return pAI;
     }
 
     public boolean GameEnd() {
         //Logic
-        if (pPlayer.getMoney() < 50) {
+        if (pPlayer.getBalance() < 50) {
             Log.getInstance().Log(1, "A.I Wins in " + nRound + "Round!");
             return true;
-        } else if (pAI.getMoney() < 50) {
+        } else if (pAI.getBalance() < 50) {
             Log.getInstance().Log(1, "You Wins in " + nRound + "Round!");
             return true;
         }

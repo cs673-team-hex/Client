@@ -5,7 +5,7 @@
  */
 package PokerDeck;
 
-import PlayerInfo.Player;
+import PlayerInfo.AIPlayer;
 import java.util.ArrayList;
 import java.util.Collections;
 import Log.Log;
@@ -71,7 +71,7 @@ public class CardDeck {
         return bSucc;
     }
 
-    public Card giveTopCardToPlayer(Player player) {
+    public Card giveTopCardToPlayer(AIPlayer player) {
         if (nNumberCard == 0) {
             return new Card(1,1);
         }

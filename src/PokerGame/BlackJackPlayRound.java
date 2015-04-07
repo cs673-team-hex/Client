@@ -8,7 +8,7 @@ package PokerGame;
 import PokerAI.BJAIMain;
 import PokerDeck.Card;
 import PokerDeck.CardDeck;
-import PlayerInfo.Player;
+import PlayerInfo.AIPlayer;
 import UI.BlackJackUINew;
 import java.util.HashSet;
 
@@ -18,18 +18,18 @@ import java.util.HashSet;
  */
 public class BlackJackPlayRound {
 
-    private final Player pPlayer;
-    private final Player pAI;
+    private final AIPlayer pPlayer;
+    private final AIPlayer pAI;
 
-    private Player pCurrentPlayer;
+    private AIPlayer pCurrentPlayer;
     private final CardDeck cardDeck;
     private int nMoneyOfRound;
-    private Player pWinPlayer;
+    private AIPlayer pWinPlayer;
 
     BlackJackUINew UI;
     BlackJackPlay game;
 
-    public BlackJackPlayRound(Player A, Player B, CardDeck d, BlackJackUINew ui, BlackJackPlay GAME) {
+    public BlackJackPlayRound(AIPlayer A, AIPlayer B, CardDeck d, BlackJackUINew ui, BlackJackPlay GAME) {
         pPlayer = A;
         pAI = B;
         cardDeck = d;
@@ -44,7 +44,7 @@ public class BlackJackPlayRound {
 
     }
 
-    public Player getCurrentPlayer() {
+    public AIPlayer getCurrentPlayer() {
         return pCurrentPlayer;
     }
 
@@ -131,8 +131,8 @@ public class BlackJackPlayRound {
         UI.RefreshWhenAIWin();
         UI.AskForNextRound();
     }
-
-    public Player GetWinPlayer() {
+    
+    public AIPlayer GetWinPlayer(){
         return pWinPlayer;
     }
 
