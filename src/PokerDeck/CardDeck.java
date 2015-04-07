@@ -9,6 +9,7 @@ import PlayerInfo.AIPlayer;
 import java.util.ArrayList;
 import java.util.Collections;
 import Log.Log;
+import PlayerInfo.Player;
 
 /**
  *
@@ -71,7 +72,7 @@ public class CardDeck {
         return bSucc;
     }
 
-    public Card giveTopCardToPlayer(AIPlayer player) {
+    public Card giveTopCardToPlayer(Player player) {
         if (nNumberCard == 0) {
             return new Card(1,1);
         }

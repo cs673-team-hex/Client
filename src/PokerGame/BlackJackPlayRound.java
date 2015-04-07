@@ -9,6 +9,8 @@ import PokerAI.BJAIMain;
 import PokerDeck.Card;
 import PokerDeck.CardDeck;
 import PlayerInfo.AIPlayer;
+import PlayerInfo.Player;
+import PlayerInfo.TruePlayer;
 import UI.BlackJackUINew;
 import java.util.HashSet;
 
@@ -18,24 +20,24 @@ import java.util.HashSet;
  */
 public class BlackJackPlayRound {
 
-    private final AIPlayer pPlayer;
+    private final TruePlayer pPlayer;
     private final AIPlayer pAI;
 
-    private AIPlayer pCurrentPlayer;
+    private Player pCurrentPlayer;
     private final CardDeck cardDeck;
     private int nMoneyOfRound;
-    private AIPlayer pWinPlayer;
+    private Player pWinPlayer;
 
     BlackJackUINew UI;
     BlackJackPlay game;
 
-    public BlackJackPlayRound(AIPlayer A, AIPlayer B, CardDeck d, BlackJackUINew ui, BlackJackPlay GAME) {
+    public BlackJackPlayRound(TruePlayer A, AIPlayer B, CardDeck d, BlackJackUINew ui, BlackJackPlay GAME) {
         pPlayer = A;
         pAI = B;
         cardDeck = d;
 
         UI = ui;
-        pCurrentPlayer = pPlayer;
+        //pCurrentPlayer = pPlayer;
         game = GAME;
         nMoneyOfRound = 50;
         UI.setBet(nMoneyOfRound);
@@ -44,7 +46,7 @@ public class BlackJackPlayRound {
 
     }
 
-    public AIPlayer getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         return pCurrentPlayer;
     }
 
@@ -132,7 +134,7 @@ public class BlackJackPlayRound {
         UI.AskForNextRound();
     }
     
-    public AIPlayer GetWinPlayer(){
+    public Player GetWinPlayer(){
         return pWinPlayer;
     }
 
@@ -178,7 +180,7 @@ public class BlackJackPlayRound {
 
     public void AIPhase() {
         BJAIMain aiMain = new BJAIMain();
-        pCurrentPlayer = pPlayer;
+//        pCurrentPlayer = pPlayer;
 
         while (BlackJackRule.GetMaxValueOfHand(pAI.getPlayerCards()) < 17) {
 

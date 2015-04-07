@@ -7,6 +7,7 @@ package PokerGame;
 
 import PlayerInfo.AIPlayer;
 import PlayerInfo.Player;
+import PlayerInfo.TruePlayer;
 import PokerDeck.Card;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,7 +18,7 @@ import java.util.HashSet;
  */
 public class BlackJackRule {
 
-    static public boolean AmIBlackJack(AIPlayer player) {
+    static public boolean AmIBlackJack(Player player) {
         return AmIBlackJack(player.getPlayerCards());
     }
 
@@ -35,7 +36,7 @@ public class BlackJackRule {
         return false;
     }
 
-    static public boolean AmIFiveDragon(AIPlayer player) {
+    static public boolean AmIFiveDragon(Player player) {
         return AmIFiveDragon(player.getPlayerCards());
     }
 
@@ -51,7 +52,7 @@ public class BlackJackRule {
         return GetMaxValueOfHand(cardArray) == -1;
     }
 
-    static public boolean AmIBust(AIPlayer player) {
+    static public boolean AmIBust(Player player) {
         return AmIBust(player.getPlayerCards());
     }
 
@@ -146,7 +147,7 @@ public class BlackJackRule {
         }
     }
 
-    static public int GetBlackJackResult(AIPlayer pPlayer, AIPlayer pAI) {
+    static public int GetBlackJackResult(TruePlayer pPlayer, AIPlayer pAI) {
         int nRet = 0;
         boolean bAIWin = false;
         if (BlackJackRule.AmIBlackJack(pAI)) {

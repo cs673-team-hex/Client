@@ -8,6 +8,7 @@ package PokerGame;
 import Log.Log;
 import PokerDeck.CardDeck;
 import PlayerInfo.AIPlayer;
+import PlayerInfo.TruePlayer;
 import UI.BlackJackUINew;
 import javax.mail.MessagingException;
 
@@ -21,7 +22,7 @@ public class BlackJackPlay {
     private BlackJackPlayRound blackJackPlayRound;
     static private CardDeck deck;
 
-    AIPlayer pPlayer;
+    TruePlayer pPlayer;
     AIPlayer pAI;
 
     final BlackJackUINew UI;
@@ -32,7 +33,7 @@ public class BlackJackPlay {
         }
         nRound = 0;
         int nStartMoney = 1000;
-        pPlayer = new AIPlayer(nStartMoney, false);
+        pPlayer = TruePlayer.GetPlayer();
         pAI = new AIPlayer(nStartMoney, true);
         UI = ui;
         UI.RefreshMoneyOfBothPlayer();
@@ -48,7 +49,7 @@ public class BlackJackPlay {
         PlayNewRound();
     }
 
-    public AIPlayer getPlayer() {
+    public TruePlayer getPlayer() {
         return pPlayer;
     }
 
