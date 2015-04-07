@@ -83,8 +83,5 @@ public class Player {
         return this.dBalance;
     }
 
-    public double GetBalance(){
-        return this.dBalance;
-    }
     
 }

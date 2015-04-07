@@ -446,9 +446,6 @@
                 <Property name="toolTipText" type="java.lang.String" value=""/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
-              <AccessibilityProperties>
-                <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="AI Points:"/>
-              </AccessibilityProperties>
             </Component>
             <Component class="javax.swing.JTextField" name="jAIScore">
               <Properties>

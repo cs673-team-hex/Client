@@ -6,6 +6,7 @@
 package PokerGame;
 
 import PlayerInfo.AIPlayer;
+import PlayerInfo.Player;
 import PokerDeck.Card;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -83,7 +84,7 @@ public class BlackJackRule {
         }
     }
 
-    static public int GetMaxValueOfHand(AIPlayer player) {
+    static public int GetMaxValueOfHand(Player player) {
         return GetMaxValueOfHand(player.getPlayerCards());
     }
 

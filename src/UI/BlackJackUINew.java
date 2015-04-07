@@ -468,8 +468,8 @@ public class BlackJackUINew extends javax.swing.JFrame {
             jAIMoney.setText(String.valueOf(1000));
             jPMoney.setText(String.valueOf(1000));
         } else {
-            jAIMoney.setText(String.valueOf(game.getAI().getMoney()));
-            jPMoney.setText(String.valueOf(game.getPlayer().getMoney()));
+            jAIMoney.setText(String.valueOf(game.getAI().getBalance()));
+            jPMoney.setText(String.valueOf(game.getPlayer().getBalance()));
         }
     }
 

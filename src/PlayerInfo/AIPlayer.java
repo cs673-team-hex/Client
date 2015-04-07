@@ -26,8 +26,4 @@ public class AIPlayer extends Player {
         bDouble = false;
     }
 
-//显示目前金钱
-    public double getBalance() {
-        return this.dBalance;
-    }
 }
