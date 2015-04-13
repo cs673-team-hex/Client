@@ -27,7 +27,7 @@ public class BJAIMain {
         return true;
     }
 
-    //简单的AI，在计算自己手手牌的分布的时候不考虑对手的手牌
+    //�?单的AI，在计算自己手手牌的分布的时候不考虑对手的手�?
     TreeMap<Integer, Integer> GetOpponentPointDistribution(CardDeck cdBeforeGame, ArrayList<Card> myCard, ArrayList<Card> oppCard) {
 
         TreeMap<Integer, Integer> mapOpp = new TreeMap<Integer, Integer>();
@@ -46,7 +46,7 @@ public class BJAIMain {
             }
         }
 
-        //backtrack获得全排列
+        //backtrack获得全排�?
         for (Card card : tempDeck.getCardList()) {
             oppCard.add(card);
             int nMaxNumber = BlackJackRule.GetMaxValueOfHand(oppCard);
@@ -146,7 +146,7 @@ public class BJAIMain {
         return resultArray;
     }
 
-    //Level SB AI 完全胡逼完
+    //Level SB AI 完全胡�?�完
     public boolean doMakeDecisionLevelSB(CardDeck cdBeforeGame, ArrayList<Card> myCard, ArrayList<Card> oppCard) {
         return Math.random() < 0.5;
     }
@@ -160,7 +160,7 @@ public class BJAIMain {
         }
     }
 
-    //Level 1 AI 不关注抓牌完对方手牌的变化,只要胜率能提高我就抓牌
+    //Level 1 AI 不关注抓牌完对方手牌的变�?,只要胜率能提高我就抓�?
     public boolean doMakeDecisionLevel1(CardDeck cdBeforeGame, ArrayList<Card> myCard, ArrayList<Card> oppCard) {
         TreeMap<Integer, Integer> myTreeMap = GetDistributionOfOwnNewCard(cdBeforeGame, myCard, oppCard);
         TreeMap<Integer, Integer> myTreeMapWhenStop = GetDistributionOfOwn(cdBeforeGame, myCard, oppCard);

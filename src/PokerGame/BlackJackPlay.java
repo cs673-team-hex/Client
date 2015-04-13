@@ -5,111 +5,199 @@
  */
 package PokerGame;
 
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import Log.Log;
+import PokerDeck.Card;
 import PokerDeck.CardDeck;
 import PlayerInfo.AIPlayer;
-import PlayerInfo.TruePlayer;
-import UI.BlackJackUINew;
-import javax.mail.MessagingException;
-
+import PlayerInfo.GamePlayer;
 /**
  *
  * @author Administrator
  */
 public class BlackJackPlay {
 
-    private int nRound;
-    private BlackJackPlayRound blackJackPlayRound;
+    private BlackJackPlayRound round;
     static private CardDeck deck;
+    private final int nNumberOfPlayer;
+    private GamePlayer pCurrentPlayer;
+    private int nMoney;
 
-    TruePlayer pPlayer;
+    GamePlayer[] pPlayerArray;
     AIPlayer pAI;
 
-    final BlackJackUINew UI;
-
-    public BlackJackPlay(BlackJackUINew ui) {
+    public BlackJackPlay( int nPlayer) {
         if (deck == null) {
             deck = new CardDeck();
         }
-        nRound = 0;
         int nStartMoney = 1000;
-        pPlayer = TruePlayer.GetPlayer();
+        nNumberOfPlayer = nPlayer;
+        pPlayerArray = new GamePlayer[nNumberOfPlayer];
+        if (nPlayer > 0) {
+            //should get info from server
+            for (int i = 0; i < nNumberOfPlayer; i++) {
+                pPlayerArray[i] = new GamePlayer(nStartMoney, "Player" + String.valueOf(i), 1, 1000, i);
+                pCurrentPlayer = pPlayerArray[0];
+            }
+        } else {
+            Log.getInstance().Log(2, "PlayerSetToZero");
+        }
+
         pAI = new AIPlayer(nStartMoney, true);
-        UI = ui;
-        UI.RefreshMoneyOfBothPlayer();
     }
 
-    public void ResetHand() {
-        //Logic
-        pPlayer.ResetHand();
-        pAI.ResetHand();
-    }
-
-    public void GameBegin() throws InterruptedException, MessagingException {
+    public void GameBegin() throws InterruptedException {
         PlayNewRound();
     }
 
-    public TruePlayer getPlayer() {
-        return pPlayer;
-    }
+    public boolean CheckPlayerLose(GamePlayer pPlayer) {
 
-    public AIPlayer getAI() {
-        return pAI;
-    }
-
-    public boolean GameEnd() {
-        //Logic
         if (pPlayer.getBalance() < 50) {
-            Log.getInstance().Log(1, "A.I Wins in " + nRound + "Round!");
-            return true;
-        } else if (pAI.getBalance() < 50) {
-            Log.getInstance().Log(1, "You Wins in " + nRound + "Round!");
             return true;
         }
-
         return false;
     }
 
-    public BlackJackPlayRound getCurrentPlayRound() {
-        return this.blackJackPlayRound;
-    }
-
-    public int getNumOfRound() {
-        return this.nRound;
-    }
-
-    public void PlayNewRound() throws InterruptedException, MessagingException {
-        //Shuffle When Number Reduce Slow
-        nRound++;
-        ResetHand();
-        //洗洗更健康
-        if (deck.getNumber() < 10) {
-            deck.RebuildDeck();
+    public boolean GameEnd() {
+        for (int i = 0; i < nNumberOfPlayer; i++) {
+            if (!CheckPlayerLose(pPlayerArray[i])) {
+                return false;
+            }
         }
-        //Check Game Is End
-        if (GameEnd()) {
-            UI.GameEndProcedure();
-        } else {
-            UI.RestoreControlOfPlayer();
-            UI.InitialBoardsBetweenRounds();
-            blackJackPlayRound = new BlackJackPlayRound(pPlayer, pAI, deck, UI, this);
-            blackJackPlayRound.SendFirstTwoCardsToBothPlayer();
-            UI.setRoundInfo(blackJackPlayRound);
+        return true;
+    }
+
+
+    public void RestorePlayerStatus() {
+        for (GamePlayer player : pPlayerArray) {
+            player.doDouble(false);
+            player.doSurrender(false);
         }
     }
 
+    public void PlayNewRound() throws InterruptedException {
+
+            round = new BlackJackPlayRound(pPlayerArray, pAI, deck,this);
+            RestorePlayerStatus();
+            
+            //Shuffle When Number Reduce Slow
+            if (deck.getNumber() < 30) {
+                deck.RebuildDeck();
+            }
+
+            round.SendFirstTwoCardsToPllayerX();
+    }
+    
+    private void jNextRoundActionPerformed() {//GEN-FIRST:event_jNextRoundActionPerformed
+
+
+        try {
+            PlayNewRound();
+
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BlackJackPlay.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+
+    }//GEN-LAST:event_jNextRoundActionPerformed
+
+    private void jHitActionPerformed() {
+        // TODO add your handling code here:
+        if (round == null) {
+            return;
+        }
+
+        if (getCurrentPlayer().AmIDouble()) {
+            //GetOneCardAndStand
+            round.PlayerHit();
+            //Should not do this, but I am lazy.
+            jStandActionPerformed();
+            return;
+        }
+
+        if (!BlackJackRule.AmIBust(getCurrentPlayer())) {
+            round.PlayerHit();
+            //Check GameStatus
+            if (BlackJackRule.AmIBust(getCurrentPlayer())) {
+                //Should not do this, but I am lazy.
+                jStandActionPerformed();
+            }
+            if (BlackJackRule.AmIFiveDragon(getCurrentPlayer())) {
+                //Should not do this, but I am lazy.
+                jStandActionPerformed();
+            }
+        }
+
+    }
+    
+    private void jStandActionPerformed() {
+ 
+        try {
+            round.RoundEndByPlayerX();
+            //TerminateControlOfPlayer(); 
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BlackJackPlay.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void jSurrenderActionPerformed() {
+
+        try {
+            round.PlayerXSurrender();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BlackJackPlay.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getCurrentPlayer().doSurrender(true);
+    }
+
+    private void jDoubleActionPerformed() {
+        // TODO add your handling code here:
+        round.PlayerXDouble();
+    }
     public void PrintLog() {
-
-        if (blackJackPlayRound.GetWinPlayer() == pAI) {
-            Log.getInstance().Log(1, "Round " + nRound + ": AI Wins " + blackJackPlayRound.getMoneyOfRoundth() + " Dollars");
-
-        } else {
-            Log.getInstance().Log(1, "Round " + nRound + ": You Wins " + blackJackPlayRound.getMoneyOfRoundth() + " Dollars");
+        for (int i = 0; i < nNumberOfPlayer; i++) {
+            Log.getInstance().Log(1, "AI Hand:      " + pAI.printCardInHand());
+            Log.getInstance().Log(1, "Player[" + i + "]Hand : " + pPlayerArray[i].printCardInHand());
+            Log.getInstance().Log(1, "Player[" + i + "]Money : " + pPlayerArray[i].getBalance());
+            Log.getInstance().Log(1, "-----------------------------------------------");
         }
-        Log.getInstance().Log(1, "AI Hand:      " + pAI.printCardInHand());
-        Log.getInstance().Log(1, "Player Hand : " + pPlayer.printCardInHand());
-        Log.getInstance().Log(1, "-----------------------------------------------");
-
-       // UI.RefreshLog(Log.getInstance().getLog());
+        System.out.println(Log.getInstance().getLog());
     }
+
+    public AIPlayer getAI() {
+        return round.getAI();
+    }
+
+    public GamePlayer getCurrentPlayer() {
+        return round.getCurrentPlayer();
+    }
+    
+    
+	public static void main(String args[]) {
+		BlackJackPlay game = new BlackJackPlay(4);
+		try {
+			game.GameBegin();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Scanner s = new Scanner(System.in);
+		while (true) {
+			String temp = s.nextLine();
+			switch(temp){
+			case "hit": System.out.println("hit");game.jHitActionPerformed();break;
+			case "double": System.out.println("double");game.jDoubleActionPerformed();break;
+			case "stand": System.out.println("stand");game.jStandActionPerformed();break;
+			case "surrender": System.out.println("surrender");game.jSurrenderActionPerformed();break;
+			}
+			ArrayList<Card> cards = game.getCurrentPlayer().getPlayerCards();
+			for(Card card:cards){
+				System.out.print(card.printCard()+";");
+			}
+			
+		}
+	}
 }
