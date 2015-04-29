@@ -18,6 +18,7 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.MessagingException;
+import javax.swing.table.DefaultTableModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,7 +42,8 @@ public class CreateRoom extends javax.swing.JFrame {
     private int type;
     private int wager;
     private String game_type;
-    Timer timer;
+    private int room_status;
+    Timer timer_roominfo;
 
     /**
      * Creates new form CreateRoom
@@ -79,27 +81,55 @@ public class CreateRoom extends javax.swing.JFrame {
                 }
             }
         });
-        timer = new java.util.Timer(true);
+        timer_roominfo = new java.util.Timer(true);
+        DefaultTableModel model = (DefaultTableModel) jRoom.getModel();
         Ask4Roominfo task = new Ask4Roominfo();
         task.setOnRefreshListner(new Ask4Roominfo.OnRefreshListener() {
 
             @Override
             public void onRefresh(String test) {
-                title = task.Get_title();
-                number = task.Get_number();
-                type = task.Get_type();
-                System.out.println(title + "  " + number + "  " + type);
+                model.setRowCount(0);
+                title = Room.Getroom().GetTtile();
+                number = Room.Getroom().GetMaxPlayers();
+                type = Room.Getroom().GetGameType();
+                //System.out.println(title + "  " + number + "  " + type);
                 if (type == 1) {
                     game_type = "BlackJack";
                 }
-                wager = task.Get_wager();
+                wager = Room.Getroom().GetWager();
                 jTitle.setText("Welcome to " + title);
                 jMax.setText(number + "");
                 jWager.setText(wager + "");
                 jType.setText(game_type);
+
+                if (task.Get_members_num() > 0) {
+                    for (int i = 0; i < task.Get_members_num(); i++) {
+                        if (i == 0) {
+                            if (task.Get_Members()[i].get_members_id() != Player.GetPlayer().GetUserId()) {
+                                jStart.setVisible(false);
+                            }
+                        }
+                        model.addRow(new Object[]{task.Get_Members()[i].get_members_id(), task.Get_Members()[i].get_members_nickname()});
+                        //System.out.println(task.get_room_name()[i]+task.get_creator_name()[i]+task.get_game_name()[i]+task.get_currentmax()[i]);
+                    }
+                }
+                //System.out.println("RoomStatus!!" + task.Get_roomstatus());
+                if (task.Get_roomstatus() == 2) {
+                    BlackJackUINew ui = new BlackJackUINew();
+                    ui.setVisible(true);
+                    try {
+                        ui.DoSomethingAtBegin();
+                    } catch (MessagingException ex) {
+                        Logger.getLogger(BlackJackUINew.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    timer_roominfo.cancel();
+                    CreateRoom.this.dispose();
+                }
+
             }
         });
-        timer.schedule(task, START_TIME, PERIOD);
+
+        timer_roominfo.schedule(task, START_TIME, PERIOD);
 
     }
 
@@ -160,9 +190,11 @@ public class CreateRoom extends javax.swing.JFrame {
         jType = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jTitle = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jRoom = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         jPanel1.setLayout(null);
@@ -248,6 +280,21 @@ public class CreateRoom extends javax.swing.JFrame {
         jPanel1.add(jPanel3);
         jPanel3.setBounds(0, 0, 410, 150);
 
+        jRoom.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id", "Nickname"
+            }
+        ));
+        jRoom.getTableHeader().setResizingAllowed(false);
+        jRoom.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(jRoom);
+
+        jPanel1.add(jScrollPane1);
+        jScrollPane1.setBounds(30, 180, 452, 200);
+
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UI/img/HomePage_bg.jpg"))); // NOI18N
         jPanel1.add(jLabel1);
         jLabel1.setBounds(0, 0, 800, 450);
@@ -267,7 +314,7 @@ public class CreateRoom extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jStartActionPerformed
-        /*JSONObject response = null;
+        JSONObject response = null;
         try {
             response = SSLClient.postMessage(getMessgeStart());
         } catch (IOException e) {
@@ -283,15 +330,15 @@ public class CreateRoom extends javax.swing.JFrame {
 
         if (JudgeStatus.OutputStatus(status) == false) {
             return;
-        }*/
-        BlackJackUINew ui = new BlackJackUINew();
-        ui.setVisible(true);
-        try {
-            ui.DoSomethingAtBegin();
-        } catch (MessagingException ex) {
-            Logger.getLogger(BlackJackUINew.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.dispose();
+        /*BlackJackUINew ui = new BlackJackUINew();
+         ui.setVisible(true);
+         try {
+         ui.DoSomethingAtBegin();
+         } catch (MessagingException ex) {
+         Logger.getLogger(BlackJackUINew.class.getName()).log(Level.SEVERE, null, ex);
+         }*/
+        //this.dispose();
 
     }//GEN-LAST:event_jStartActionPerformed
 
@@ -313,7 +360,14 @@ public class CreateRoom extends javax.swing.JFrame {
         if (JudgeStatus.OutputStatus(status) == false) {
             return;
         }
-        timer.cancel();
+        HomePage homePage;
+        try {
+            homePage = new HomePage();
+            homePage.setVisible(true);
+        } catch (JSONException ex) {
+            Logger.getLogger(CreateRoom.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        timer_roominfo.cancel();
         this.dispose();
     }//GEN-LAST:event_jQuitActionPerformed
 
@@ -362,6 +416,8 @@ public class CreateRoom extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JButton jQuit;
+    private javax.swing.JTable jRoom;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jStart;
     private javax.swing.JLabel jTitle;
     private javax.swing.JLabel jType;

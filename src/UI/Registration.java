@@ -37,7 +37,7 @@ public class Registration extends javax.swing.JFrame {
      */
     public Registration() {
         initComponents();
-        addWindowListener(new WindowAdapter() {
+        /*addWindowListener(new WindowAdapter() {
 
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
@@ -45,7 +45,7 @@ public class Registration extends javax.swing.JFrame {
                 LoginPage = new Login();
                 LoginPage.setVisible(true);
             }
-        });
+        });*/
     }
 
     /**
@@ -66,7 +66,7 @@ public class Registration extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         jPanel1.setLayout(null);

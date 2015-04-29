@@ -58,6 +58,7 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+        Room.initial();
         //System.out.println(user_name.getText());
         //System.out.println(user_pass.getPassword());
         user_name.addMouseListener(new MouseAdapter(){
@@ -80,7 +81,8 @@ public class Login extends javax.swing.JFrame {
             }
         });
         
-        Music.initial(1);
+        //Music.initial
+       Music.GetMusic().startMusic(1);
     }
     
     /**
@@ -181,7 +183,7 @@ public class Login extends javax.swing.JFrame {
             password = password + temp[i];
             //System.out.print(temp[i]);
         }
-        System.out.println("password: " + password);
+        //System.out.println("password: " + password);
         //System.out.println();
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -192,13 +194,13 @@ public class Login extends javax.swing.JFrame {
                 sb.append(String.format("%02x", b & 0xff));
             }
             password = sb.toString();
-            System.out.println("password: " + sb.toString());
+            //System.out.println("password: " + sb.toString());
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         username = user_name.getText();
-        System.out.println("username: " + username);
+        //System.out.println("username: " + username);
         JSONObject response = null;
         try {
             response = SSLClient.postMessage(getMessge());
@@ -211,7 +213,7 @@ public class Login extends javax.swing.JFrame {
         
         try {
             status = response.getInt(STATUS);
-            System.out.println(status);
+            //System.out.println(status);
             //static method
             if(JudgeStatus.OutputStatus(status) == false){
                 return;
@@ -233,10 +235,10 @@ public class Login extends javax.swing.JFrame {
         } catch (JSONException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        //System.out.println("CREDIT" + credit);
         Player.initial(balance,nickname,rank,credit,userid,factor1,factor2,factor3);
         
-        System.out.println(response);
+        //System.out.println(response);
         HomePage h = null;
         try {
             h = new HomePage();
@@ -270,7 +272,7 @@ public class Login extends javax.swing.JFrame {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println(test);
+        //System.out.println(test);
         return test;
     }
 

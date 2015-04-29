@@ -13,11 +13,12 @@ public class Player {
     private double Balance;
     private String NickName;
     private int Rank;
-    private int Credit;
+    private double Credit;
     private int Userid;
     private double Factor1;
     private double Factor2;
     private double Factor3;
+    private boolean isCreator = false;
     
     private static Player player = null; 
     
@@ -53,11 +54,11 @@ public class Player {
         return this.Rank;
     }
     
-    public void SetCredit(int credit){
+    public void SetCredit(double credit){
         this.Credit = credit;
     }
     
-    public int GetCredit(){
+    public double GetCredit(){
         return this.Credit;
     }
     
@@ -93,6 +94,14 @@ public class Player {
         return this.Factor3;
     }
             
+    public void SetIsCreator(boolean iscreator){
+        isCreator = iscreator;
+    }
+    
+    public boolean GetIsCreator(){
+        return this.isCreator;
+    }
+    
     private Player(double balance, String nickname, int rank, int credit, int userid, double factor1, double factor2, double factor3){
         this.Balance = balance;
         this.NickName = nickname;

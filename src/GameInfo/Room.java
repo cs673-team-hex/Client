@@ -20,6 +20,9 @@ public class Room {
     public static Room Getroom(){
         return room;
     }
+    public static void initial(){
+        room = new Room(0,null,0,0,0);
+    }
     public static void initial(int roomid, String title, int max, int wager, int type){
         room = new Room(roomid, title, max, wager, type);
         

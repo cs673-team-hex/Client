@@ -46,21 +46,29 @@ public class Ask4RoomList extends TimerTask {
     public static String KEY_CURRENTNUMBER = "cnumber";
     public static String KEY_MAXNUMBER = "mnumber";
     public static String KEY_ROOMID = "roomid";
+    public static String KEY_WAGER = "wager";
     public static int ROOMSPACE = 10;
     
-    private String[] room_name = new String[num];
+    private String[] room_title = new String[num];
     private String[] creator_name = new String[num];
-    private String[] game_name = new String[num];
+    private String[] room_name = new String[num];
+    private int[] room_type = new int[num];
     private int game_type;
     private String[] currentmax = new String[num];
+    private int[] room_max = new int[num];
+    public int[] room_wager = new int[num];
     private int currentnumber;
-    private int maxnumber;
+    private int max;
     private int room_number;
     private int userid;
     private int roomid;
     private int[] roomids = new int[ROOMSPACE];
     private JSONArray roominfo;
 
+    public static String KEY_MONEY = "money";
+    public static String KEY_RANK = "rank";
+    private double money;
+    private int rank;
     private int status;
     public static String STATUS = "status";
 
@@ -88,6 +96,10 @@ public class Ask4RoomList extends TimerTask {
         JSONObject result = new JSONObject();
         try {
             result = response.getJSONObject(KEY_RES);
+            money = result.getDouble(KEY_MONEY);
+            Player.GetPlayer().SetBalance(money);
+            rank = result.getInt(KEY_RANK);
+            Player.GetPlayer().SetRank(rank);
             // System.out.println(result);
         } catch (JSONException ex) {
             Logger.getLogger(Ask4RoomList.class.getName()).log(Level.SEVERE, null, ex);
@@ -108,18 +120,23 @@ public class Ask4RoomList extends TimerTask {
                         //System.out.println("ReachC");
                         room = roominfo.getJSONObject(i);
                         //System.out.println(room);
-                        room_name[i] = room.getString(KEY_TITLE);
+                        room_title[i] = room.getString(KEY_TITLE);
                         creator_name[i] = room.getString(KEY_USERNAME);
                         game_type = room.getInt(KEY_GAMETYPE);
+                        room_wager[i] = room.getInt(KEY_WAGER);
+                        room_type[i] = game_type;
                         roomid = room.getInt(KEY_ROOMID);
+                        //System.out.println("GameIds: " + roomid);
                         roomids[i] = roomid;
+                        //System.out.println(roomids.length);
                         if (game_type == 1) {
-                            game_name[i] = "BlackJack";
+                            room_name[i] = "BlackJack";
                         }
                         currentnumber = room.getInt(KEY_CURRENTNUMBER);
-                        maxnumber = room.getInt(KEY_MAXNUMBER);
-                        currentmax[i] = currentnumber + "/" + maxnumber;
-                        //System.out.println(room_name[i]+creator_name[i]+game_name[i]+currentmax[i]);
+                        max = room.getInt(KEY_MAXNUMBER);
+                        room_max[i] = max;
+                        currentmax[i] = currentnumber + "/" + max;
+                        //System.out.println(room_name[i]+creator_name[i]+room_name[i]+currentmax[i]);
                     } catch (JSONException ex) {
                         Logger.getLogger(Ask4RoomList.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -128,6 +145,11 @@ public class Ask4RoomList extends TimerTask {
         } else {
             room_number = 0;
         }
+        
+        /*for(int j = 0; j < roomids.length; j++){
+            System.out.println(roomids[j]);
+        }*/
+        
         if (onRefreshListener != null) {
             onRefreshListener.onRefresh("test");
         }
@@ -142,16 +164,28 @@ public class Ask4RoomList extends TimerTask {
         return room_number;
     }
 
-    public String[] get_room_name() {
-        return room_name;
+    public String[] get_room_title() {
+        return room_title;
     }
 
+    public int[] get_room_wager() {
+        return room_wager;
+    }
+    
+    public int[] get_room_type() {
+        return room_type;
+    }
+    
+    public int[] get_room_max() {
+        return room_max;
+    }
+    
     public String[] get_creator_name() {
         return creator_name;
     }
 
-    public String[] get_game_name() {
-        return game_name;
+    public String[] get_room_name() {
+        return room_name;
     }
 
     public String[] get_currentmax() {

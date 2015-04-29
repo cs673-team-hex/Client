@@ -41,7 +41,7 @@ public class CreateRoomInfo extends javax.swing.JFrame {
     public CreateRoomInfo() {
         initComponents();
         jTitle.setText(Player.GetPlayer().GetNickName() + "'s room");
-        jMax.setText("8");
+        jMax.setText("3");
         jWager.setText("50");
     }
 
@@ -67,7 +67,7 @@ public class CreateRoomInfo extends javax.swing.JFrame {
         jCancel = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         jPanel1.setLayout(null);
@@ -177,7 +177,7 @@ public class CreateRoomInfo extends javax.swing.JFrame {
             return;
         }
 
-        System.out.println(response);
+        //System.out.println(response);
         JSONObject result = new JSONObject();
         try {
             result = response.getJSONObject(KEY_RES);
@@ -191,7 +191,7 @@ public class CreateRoomInfo extends javax.swing.JFrame {
             Logger.getLogger(HomePage.class.getName()).log(Level.SEVERE, null, ex);
         }
         Room.initial(room_id, cre_title, cre_num, cre_wager, cre_type);
-
+        Player.GetPlayer().SetIsCreator(true);
         CreateRoom C = new CreateRoom();
         C.setSize(800, 450);
         C.setLocation(0, 0);
@@ -202,6 +202,13 @@ public class CreateRoomInfo extends javax.swing.JFrame {
 
     private void jCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCancelActionPerformed
         // TODO add your handling code here:
+        HomePage homePage;
+        try {
+            homePage = new HomePage();
+            homePage.setVisible(true);
+        } catch (JSONException ex) {
+            Logger.getLogger(CreateRoom.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.dispose();
     }//GEN-LAST:event_jCancelActionPerformed
 
