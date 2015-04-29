@@ -1,4 +1,4 @@
-# This is the server for Black Jack game.
+# This is the Black Jack AI in local client.
 
 Set up
 ============
@@ -12,17 +12,14 @@ Load the root folder into the project, compile.
 Load all the files from the src, compile. 
 
   
-Start 
+Usage 
 ============
 
 Run command as follow:
 
-1. see the version
-  $ java -jar \dist\UserInterface.jar -v 
-  
-2. Play the Game
+Play the Game
 
-	$ java -jar \dist\UserInterface.jar -ip x.x.x.x 
+   $ java -jar \dist\UserInterface.jar
   
 Documentation
 =============
