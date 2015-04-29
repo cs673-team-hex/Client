@@ -570,6 +570,7 @@ public class BlackJackUINew extends javax.swing.JFrame {
         }
     }
 
+<<<<<<< HEAD
     public void findmyposition() {
         System.out.println("Player numbers " + Players.length);
         for (int i = 0; i < Players.length; i++) {
@@ -579,6 +580,17 @@ public class BlackJackUINew extends javax.swing.JFrame {
             }
             //System.out.println("Player ID" + Players[i].getuserid());
             //System.out.println("Current Player" + Player.GetPlayer().GetUserId());
+=======
+    public void RefreshMoneyOfBothPlayer() {
+        //TODO should get money from DB,
+        //dangerous if not modified
+        if (game == null) {
+            jAIMoney.setText(String.valueOf(1000));
+            jPMoney.setText(String.valueOf(1000));
+        } else {
+            jAIMoney.setText(String.valueOf(game.getAI().getBalance()));
+            jPMoney.setText(String.valueOf(game.getPlayer().getBalance()));
+>>>>>>> bb3de5551ce2b72759bc0c94fc138ddce856d562
         }
 
     }
