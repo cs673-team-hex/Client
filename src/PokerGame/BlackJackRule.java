@@ -6,16 +6,9 @@
  */
 package PokerGame;
 
-<<<<<<< HEAD
 import TimerTaskGame.Ask4RoundInfo.PlayerInfo;
 import TimerTaskGame.Ask4RoundInfo;
 import TimerTaskGame.Ask4RoundInfo.PlayerInfo.CardsInfo;
-=======
-import PlayerInfo.AIPlayer;
-import PlayerInfo.Player;
-import PlayerInfo.TruePlayer;
-import PokerDeck.Card;
->>>>>>> bb3de5551ce2b72759bc0c94fc138ddce856d562
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -102,11 +95,7 @@ public class BlackJackRule {
         return GetMaxValueOfHand(player.getCardsInfo());
     }
 
-<<<<<<< HEAD
     static public boolean GetBlackJackResult(PlayerInfo pPlayer, PlayerInfo pAI) {
-=======
-    static public int GetBlackJackResult(TruePlayer pPlayer, AIPlayer pAI) {
->>>>>>> bb3de5551ce2b72759bc0c94fc138ddce856d562
         int nRet = 0;
         boolean bAIWin = false;
         if (BlackJackRule.AmIBlackJack(pAI)) {
